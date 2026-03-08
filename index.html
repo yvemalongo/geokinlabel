@@ -1,131 +1,214 @@
 <!DOCTYPE html>
+
 <html lang="fr">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>GéoPortail Kinshasa</title>
 
-  <!-- OL8 UMD -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@8.1.0/ol.css" />
-  <script src="https://cdn.jsdelivr.net/npm/ol@8.1.0/dist/ol.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@8.1.0/ol.css">
 
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles/app.css">
 
-  <!-- Ton CSS -->
-  <link rel="stylesheet" href="./styles/app.css" />
 </head>
 
 <body>
 
-  <!-- HEADER -->
   <header>
+
     <div class="logo">
-      <div class="logo-ico"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Coat_of_arms_of_Kinshasa.svg/960px-Coat_of_arms_of_Kinshasa.svg.png" alt="" width="32" height="32">    </div>
-      <h1>GéoPortail Kinshasa <span>Tableau de Bord Territorial </span></h1>
+
+      <div class="logo-ico">&#128506;</div>
+
+      <h1>GéoPortail Kinshasa <span>Tableau de Bord Territorial · RDC</span></h1>
+
     </div>
 
     <div class="hright">
-      <div class="pill"><div class="dot"></div>PROTOTYPE v2</div>
-      <div class="sep"></div>
 
-      <button class="btn on" id="btn-osm" onclick="APP.setBasemap('osm')">Rues</button>
-      <button class="btn" id="btn-satellite" onclick="APP.setBasemap('satellite')">Satellite</button>
-      <button class="btn" id="btn-dark" onclick="APP.setBasemap('dark')">Sombre</button>
+      <div class="pill"><div class="dot"></div>v2.1</div>
 
       <div class="sep"></div>
-      <button class="btn btn-p" onclick="APP.toggleSidebar()">📊 Analyse</button>
+
+      <button class="btn on"  id="btn-osm"       onclick="setBasemap('osm')">Rues</button>
+
+      <button class="btn"     id="btn-satellite" onclick="setBasemap('satellite')">Satellite</button>
+
+      <button class="btn"     id="btn-dark"      onclick="setBasemap('dark')">Sombre</button>
+
+      <div class="sep"></div>
+
+      <button class="btn btn-gps"   id="btn-gps"   onclick="locateMe()">&#128205; Ma position</button>
+
+      <button class="btn btn-radar" id="btn-radar" onclick="toggleRadarMode()">&#128225; Rayon</button>
+
+      <div class="sep"></div>
+
+      <button class="btn btn-p" onclick="toggleSidebar()">&#128202; Analyse</button>
+
     </div>
+
   </header>
 
-  <!-- MAP -->
   <div id="map"></div>
 
-  <!-- INTRO CARD -->
   <div id="intro">
+
     <div class="icard">
-      <div class="iico"> <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgd9q_RJaX9GVqQDuQ7vJNC83HS_zIterby2p6Ec-Px3fazIU7_3JJwwsjGZcaIn1WOYQGNZn0ntOlPzY3NAYWaZ8kurn1acNfZNzFZAQeer8zUBss2bwkiH-ITiCH8BjX1S3V8ULFP-x4/s0/Flag_of_the_Democratic_Republic_of_the_Congo.gif" alt="" width="32" height="32">                 
-      </div>
-      <h2>GÉOPORTAIL MUNICIPAL (Par YVES MALONGO )</h2>
-      <p>
-        Tableau de bord territorial pour la <strong style="color:var(--text)">Ville de Kinshasa</strong>.<br>
-        Explorez les communes et leurs données.(RD Congo)
-      </p>
-      <div class="ihint">▶ Cliquer sur une zone colorée</div>
+
+      <div class="iico">&#127961;&#65039;</div>
+
+      <h2>GÉOPORTAIL MUNICIPAL</h2>
+
+      <p>Cliquez sur une <strong style="color:var(--text)">commune</strong>, utilisez <strong style="color:var(--green)">Ma position</strong> ou activez <strong style="color:var(--orange)">Rayon</strong> pour analyser votre environnement.</p>
+
+      <div class="ihint">&#9654; Cliquer sur une zone pour commencer</div>
+
     </div>
+
   </div>
 
-  <!-- SIDEBAR -->
   <div id="sidebar">
+
     <div class="sb-top">
+
       <div class="sb-name" id="sb-name">—</div>
-      <div class="sb-sub" id="sb-sub">Sélectionnez une commune sur la carte</div>
-      <span class="badge">Kinshasa · République Démocratique du Congo</span>
+      
+      
+      <button id="sidebar-toggle" onclick="toggleSidebar()" title="Ouvrir / fermer le panneau">
+  ◀
+      </button>
+
+      <div class="sb-sub"  id="sb-sub">Sélectionnez une commune</div>
+
+      <span class="badge">Kinshasa · RDC</span>
+
     </div>
 
     <div id="sb-body">
-      <div class="ph0">
-        <span class="ic">📍</span>
-        Cliquez sur une commune colorée de la carte pour afficher son tableau de bord.
-      </div>
+
+      <div class="ph0"><span class="ic">&#128205;</span>Cliquez sur une commune pour afficher son tableau de bord.</div>
+
     </div>
+
   </div>
 
-  <!-- LAYER PANEL -->
+  <div id="radar-panel">
+
+    <div class="rp-top">
+
+      <div class="rp-title">
+
+        <span>&#128225;</span><span>Analyse de Proximité</span>
+
+        <button class="rp-close" onclick="closeRadar()">&#10005; Fermer</button>
+
+      </div>
+
+      <div class="rp-sub" id="rp-sub">Utilisez Ma position ou cliquez sur la carte</div>
+
+    </div>
+
+    <div class="radius-control">
+
+      <div class="rc-label">
+
+        <span style="font-size:.75rem;font-weight:600">Rayon d'analyse</span>
+
+        <span class="rc-val" id="rc-val">500 m</span>
+
+      </div>
+
+      <input type="range" id="radius-slider" min="100" max="5000" step="50" value="500" oninput="onSlider(this.value)">
+
+      <div style="display:flex;justify-content:space-between;font-size:.58rem;color:var(--muted);margin-top:4px"><span>100m</span><span>500m</span><span>1km</span><span>2km</span><span>5km</span></div>
+
+      <div class="rm">
+
+        <input type="number" id="radius-input" min="100" max="5000" value="500" placeholder="ex: 750">
+
+        <span>m</span>
+
+        <button onclick="applyManualRadius()">&#10003; OK</button>
+
+      </div>
+
+      <button id="btn-recenter" onclick="recenterOnMe()">&#128205; Recentrer sur ma position</button>
+
+    </div>
+
+    <div class="radar-stats" id="radar-stats" style="display:none">
+
+      <div class="rs-box"><div class="rs-val" id="rs-total">0</div><div class="rs-lbl">Total</div></div>
+
+      <div class="rs-box"><div class="rs-val" id="rs-sante" style="color:var(--red)">0</div><div class="rs-lbl">Santé</div></div>
+
+      <div class="rs-box"><div class="rs-val" id="rs-edu" style="color:var(--accent)">0</div><div class="rs-lbl">Éducation</div></div>
+
+      <div class="rs-box"><div class="rs-val" id="rs-danger" style="color:var(--red)">0</div><div class="rs-lbl">Pts chauds</div></div>
+
+    </div>
+
+    <div id="radar-results">
+
+      <div class="ph0" style="padding:28px 18px"><span class="ic" style="font-size:1.8rem">&#128225;</span>Cliquez sur <strong style="color:var(--green)">Ma position</strong> ou activez le mode rayon et cliquez sur la carte</div>
+
+    </div>
+
+  </div>
+
   <div id="lp">
-    <div class="lp-h">Couches de données</div>
+
+    <div class="lp-h">Couches</div>
 
     <div class="lp-g">
+
       <div class="lp-gt">Fonds de carte</div>
-      <div class="lp-r on" id="lp-osm" onclick="APP.setBasemap('osm')">
-        <div class="lp-t"></div><span class="lp-l">Rues (OSM)</span>
-      </div>
-      <div class="lp-r" id="lp-satellite" onclick="APP.setBasemap('satellite')">
-        <div class="lp-t"></div><span class="lp-l">Satellite (Esri)</span>
-      </div>
-      <div class="lp-r" id="lp-dark" onclick="APP.setBasemap('dark')">
-        <div class="lp-t"></div><span class="lp-l">Sombre (CartoDB)</span>
-      </div>
+
+      <div class="lp-r on" id="lp-osm"       onclick="setBasemap('osm')">       <div class="lp-t"></div><span class="lp-l">Rues (OSM)</span></div>
+
+      <div class="lp-r"    id="lp-satellite" onclick="setBasemap('satellite')"> <div class="lp-t"></div><span class="lp-l">Satellite (Esri)</span></div>
+
+      <div class="lp-r"    id="lp-dark"      onclick="setBasemap('dark')">      <div class="lp-t"></div><span class="lp-l">Sombre (CartoDB)</span></div>
+
     </div>
 
     <div class="lp-g">
-      <div class="lp-gt">Analyse thématique</div>
-      <div class="lp-r on" id="lp-communes" onclick="APP.toggleLayer('communes')">
-        <div class="lp-t"></div><span class="lp-l">Limites administratives</span><span class="lp-b">Admin</span>
-      </div>
-      <div class="lp-r" id="lp-heatmap" onclick="APP.toggleLayer('heatmap')">
-        <div class="lp-t"></div><span class="lp-l">Carte de chaleur (insécurité)</span><span class="lp-b">🔥</span>
-      </div>
-      <div class="lp-r" id="lp-poi" onclick="APP.toggleLayer('poi')">
-        <div class="lp-t"></div><span class="lp-l">Points d'intérêt</span><span class="lp-b">POI</span>
-      </div>
+
+      <div class="lp-gt">Thématiques</div>
+
+      <div class="lp-r on" id="lp-communes" onclick="toggleLayer('communes')"><div class="lp-t"></div><span class="lp-l">Limites administratives</span></div>
+
+      <div class="lp-r"    id="lp-heatmap"  onclick="toggleLayer('heatmap')"> <div class="lp-t"></div><span class="lp-l">Chaleur (Insécurité)</span><span class="lp-b">&#128293;</span></div>
+
+      <div class="lp-r"    id="lp-poi"      onclick="toggleLayer('poi')">     <div class="lp-t"></div><span class="lp-l">Points d'intérêt</span></div>
+
     </div>
+
   </div>
 
-  <!-- TOOLTIP -->
-  <div id="tt">
-    <div class="ttn" id="ttn"></div>
-    <div class="tti" id="tti"></div>
-  </div>
+  <div id="tt"><div class="ttn" id="ttn"></div><div class="tti" id="tti"></div></div>
 
-  <!-- COORDS -->
-  <div id="coords">🌐 Lat — · Lon —</div>
+  <div id="coords">&#127758; —</div>
 
-  <!-- TOAST -->
+  <div id="radar-hint">&#128225; Mode Rayon actif — cliquez sur la carte</div>
+
   <div id="toast"></div>
 
-  <!-- Ton JS (à la fin du body) -->
+  <div id="ooz"><div style="font-size:2.2rem;margin-bottom:8px">&#128683;</div><h3>Hors du périmètre</h3><p>Votre position GPS est en dehors de la <strong style="color:var(--text)">Ville de Kinshasa</strong>. Ce GéoPortail couvre uniquement les 26 communes kinoisses.</p><button onclick="document.getElementById('ooz').style.display='none'">Fermer</button></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/ol@8.1.0/dist/ol.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
   <script src="./scripts/app.js"></script>
+
 </body>
 
 </html>
-
-
-
-
-
-
-
