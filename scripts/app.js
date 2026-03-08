@@ -681,7 +681,7 @@ map.on('pointermove',function(evt){
 });
 
 // ══════════════════════════════════════════════════════════
-// FONCTIONS GLOBALES (appelées par onclick HTML)
+// FONCTIONS GLOBALES
 // ══════════════════════════════════════════════════════════
 window.toggleCat=function(el){
   var ci=el.parentElement.querySelector('.cat-items');
